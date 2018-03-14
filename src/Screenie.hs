@@ -135,6 +135,9 @@ deleteMonitoringAction tid mstate = mstate
     Just $ MonitoringAction name_of_action_tvar $ alterer next
 
 -- | Runs an action and make it subject to monitoring.
+--
+-- This will cause screenie to take over the terminal and stdin if this
+-- function is called even once.
 withMonitoring :: (MonadMask m, MonadIO m)
                => String
                -> m a
