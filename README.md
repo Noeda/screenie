@@ -15,3 +15,6 @@ in which case the parts will be shown on the same row in the terminal output.
 
 `withMonitoringProgress` can additionally display a progress bar for threads.
 
+You likely want to set `-T` flag as rtsopts if you want to see garbage
+collector stats as well.
+

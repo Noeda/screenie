@@ -320,14 +320,14 @@ displayProgressTruncatedString num_progress_blocks max_width str = do
 displayAligned :: Int -> Int -> [(String, Maybe Double)] -> StateT DisplayState IO ()
 displayAligned display_width things_per_row things =
   for_ grouped_things $ \group -> do
-    liftIO $ clearLine
-    for_ group $ \(text, maybe_progress) -> do
+    liftIO clearLine
+    for_ group $ \(text, maybe_progress) ->
       case maybe_progress of
         Nothing -> do
           displayTruncatedString (width_per_item-1) text
           displayTruncatedString 1 "|"
         Just progress -> do
-          let num_progress_blocks = round $ (fromIntegral $ width_per_item-1)*progress
+          let num_progress_blocks = round $ fromIntegral (width_per_item-1)*progress
           displayProgressTruncatedString num_progress_blocks (width_per_item-1) text
           displayTruncatedString 1 "|"
     advanceLine
@@ -348,17 +348,17 @@ displayMonitor monitor_state = flip evalStateT (DisplayState 0 0) $ do
   -- Get display size. We'll know when we are clipping out by using this
   -- information.
   (display_width, display_height) <- getWindowSize
-  liftIO $ clearScreen
+  liftIO clearScreen
 
   -- First display some misc information about the system, if the stats are
   -- available.
   rts_stats_enabled <- liftIO getRTSStatsEnabled
-  when (rts_stats_enabled) $ do
+  when rts_stats_enabled $ do
     rts_stats <- liftIO getRTSStats
     displayAligned
                  display_width
                  4
-                 (fmap (\x -> (x, Nothing)) $
+                 ((\x -> (x, Nothing)) <$>
                   ["GCs: "        ++ show (gcs rts_stats),
                    "Major GCs: "  ++ show (major_gcs rts_stats),
                    "Allocated: "  ++ show (allocated_bytes rts_stats),
@@ -379,7 +379,7 @@ displayMonitor monitor_state = flip evalStateT (DisplayState 0 0) $ do
                        case maybe_progress of
                          Nothing       -> (show thread_id <> ": " <> name, maybe_progress)
                          Just progress ->
-                           let percentage' = show ((fromRational $ (toRational progress)*100 :: Fixed E3)) <> "%"
+                           let percentage' = show (fromRational $ toRational progress*100 :: Fixed E3) <> "%"
                                percentage_padded = replicate (8 - length percentage') ' ' <> percentage'
                             in (show thread_id <> ": [" <> percentage_padded <> "] " <> name, maybe_progress))
 
