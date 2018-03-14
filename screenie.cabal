@@ -1,0 +1,43 @@
+name:                screenie
+version:             0.1.0.0
+synopsis:            Interactive Text-Based Monitoring
+homepage:            https://github.com/Noeda/screenie
+license:             BSD3
+license-file:        LICENSE
+author:              Mikko Juola
+maintainer:          mikko.juola@iki.fi
+copyright:           Mikko Juola (c) 2018
+category:            System
+build-type:          Simple
+extra-source-files:  ChangeLog.md
+cabal-version:       >=1.10
+
+flag build-demos
+  default:     True
+  description: Build executables that demonstrate screenie capabilities.
+
+library
+  exposed-modules:     Screenie
+  build-depends:       ansi-terminal  >=0.5 && <1.0
+                      ,async          >=2.0 && <3.0
+                      ,base           >=4.6 && <5.0
+                      ,containers     >=0.5 && <1.0
+                      ,deepseq        >=1.1 && <2.0
+                      ,exceptions     >=0.1 && <1.0
+                      ,transformers   >=0.3 && <1.0
+                      ,stm            >=2.3 && <3.0
+  hs-source-dirs:      src
+  ghc-options:         -Wall -fno-warn-name-shadowing
+  c-sources:           cbits/terminal.c
+                       cbits/wcwidth.c
+  default-language:    Haskell2010
+
+executable screenie-demo
+  main-is:             Main.hs
+  hs-source-dirs:      demo
+  build-depends:       async      >=2.0 && <3.0
+                      ,base       >=4.6 && <5.0
+                      ,screenie
+  ghc-options:         -Wall -fno-warn-name-shadowing -threaded -rtsopts "-with-rtsopts=-N"
+  default-language:    Haskell2010
+
